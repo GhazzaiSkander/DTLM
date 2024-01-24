@@ -96,9 +96,10 @@ def simple_transformation(df):
             #print("Prompt ", description,  example_pairs, column )
             try :
               print("Generating messages for model...")
-              messages=simple_pormpt_template(example_pairs,description,inputs)
-              print(messages)
+              #messages=simple_pormpt_template(example_pairs,description,inputs)
+              #print(messages)
               print("Getting completion from the model...")
+              messages=[]
               #Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages)
               Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages)
               try:
