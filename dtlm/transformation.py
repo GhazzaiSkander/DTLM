@@ -10,6 +10,7 @@ from .verification import Edges_Verification
 from .prompt import simple_pormpt_template
 
 def simple_transformation(df):
+    print(simple_pormpt_template)
     # Dropdown for column selection
     column_selector = widgets.Dropdown(
         options=df.columns,
