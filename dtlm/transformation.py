@@ -7,6 +7,7 @@ import logging
 import ipywidgets as widgets
 from .completion import get_completion
 from .verification import Edges_Verification
+from .prompt import simple_pormpt_template
 
 def simple_transformation(df):
     # Dropdown for column selection
