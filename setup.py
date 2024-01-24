@@ -22,8 +22,6 @@ setup(
         'openai',  # For example, if you are using OpenAI's API
         'pandas',  # If your library depends on pandas
         'ipywidgets',  # If you are using ipywidgets
-        'ast',
-        're'
         # Add other dependencies as needed
     ],
     classifiers=[
