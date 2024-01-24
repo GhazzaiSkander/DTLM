@@ -3,7 +3,7 @@
 
 # In[1]:
 
-
+import logging
 import ipywidgets as widgets
 from .completion import get_completion
 from .verification import Edges_Verification
