@@ -4,13 +4,13 @@
 # In[1]:
 
 
-
+import logging
+import ipywidgets as widgets
+from .completion import get_completion
+from .verification import Edges_Verification
+from .prompt import simple_pormpt_template
 def simple_transformation(df):
-    import logging
-    import ipywidgets as widgets
-    from .completion import get_completion
-    from .verification import Edges_Verification
-    from .prompt import simple_pormpt_template
+
     # Dropdown for column selection
     column_selector = widgets.Dropdown(
         options=df.columns,
@@ -96,10 +96,9 @@ def simple_transformation(df):
             #print("Prompt ", description,  example_pairs, column )
             try :
               print("Generating messages for model...")
-              #messages=simple_pormpt_template(example_pairs,description,inputs)
-              #print(messages)
+              messages=simple_pormpt_template(example_pairs,description,inputs)
+              print(messages)
               print("Getting completion from the model...")
-              messages=[]
               #Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages)
               Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages)
               try:
