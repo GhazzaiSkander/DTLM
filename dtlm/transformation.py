@@ -11,7 +11,6 @@ def simple_transformation(df):
     from .completion import get_completion
     from .verification import Edges_Verification
     from .prompt import simple_pormpt_template
-    print(simple_pormpt_template)
     # Dropdown for column selection
     column_selector = widgets.Dropdown(
         options=df.columns,
