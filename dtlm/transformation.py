@@ -3,13 +3,14 @@
 
 # In[1]:
 
-import logging
-import ipywidgets as widgets
-from .completion import get_completion
-from .verification import Edges_Verification
-from .prompt import simple_pormpt_template
+
 
 def simple_transformation(df):
+    import logging
+    import ipywidgets as widgets
+    from .completion import get_completion
+    from .verification import Edges_Verification
+    from .prompt import simple_pormpt_template
     print(simple_pormpt_template)
     # Dropdown for column selection
     column_selector = widgets.Dropdown(
