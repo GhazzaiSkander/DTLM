@@ -133,7 +133,7 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
             new_column_name = column + "_transformed"
             if new_column_name in df.columns:
                     logging.warning(f"Column '{new_column_name}' already exists. Overwriting the column.")
-            df[new_column_name] = results
+            df.loc[:, new_column_name] = results
             print(f"Transformation is done for the column '{column}'. New column '{new_column_name}' added.")
             
             experiment_data = {
