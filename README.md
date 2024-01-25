@@ -1,5 +1,5 @@
 
-# Data transformation using Large language models(DTLM)
+# Data transformation using Large Language Models(DTLM)
 
 ## Description
 DTLM is a Python library designed to simplify data transformation tasks in data science projects using the power of large language models. This library enables users, regardless of their coding expertise, to perform complex data transformations through a user-friendly interface. without coding.
