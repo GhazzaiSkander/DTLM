@@ -9,6 +9,9 @@ import ipywidgets as widgets
 from .completion import get_completion
 from .verification import Edges_Verification
 from .prompt import simple_pormpt_template
+from .counter import split_list_by_token_limit
+
+
 def simple_transformation(df):
 
     # Dropdown for column selection
@@ -88,44 +91,45 @@ def simple_transformation(df):
             description = description_input.value
             column=column_selector.value
             inputs=list(df[column].values)
+            sublists=split_list_by_token_limit(inputs)
             print(f"Transformation Description: {description}")
             print("Processing the following pairs:")
+            results=[]
             for inp, out in example_pairs:
                 print(f"Input: {inp} -> Output: {out}")
             # Add your processing logic here
             #print("Prompt ", description,  example_pairs, column )
-            try :
-              print("Generating messages for model...")
-              messages=simple_pormpt_template(example_pairs,description,inputs)
-              print(messages)
-              print("Getting completion from the model...")
-              #Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages)
-              Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages)
-              try:
-                  print("Processing model response...")
-                  output = list(Edges_Verification(Response_Content))
-              except:
-                  print("Automatic extraction failed. Please review the response content below:")
-                  print(Response_Content)
-                  print("\nPlease manually enter the list in a valid Python list format, e.g., ['item1', 'item2', ...]")
-                  output_str = input("Enter the list: ")
+            for subpart in sublists :
+                try :
+                  print("Generating messages for model...")
+                  messages=simple_pormpt_template(example_pairs,description,subpart)
+                  print(messages)
+                  print("Getting completion from the model...")
+                  #Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages)
+                  Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages)
                   try:
-                      output = ast.literal_eval(output_str)
-                      if not isinstance(output, list):
-                          raise ValueError("Entered data is not a list.")
-                  except Exception as e:
-                      print(f"Error in manual input: {e}")
-                      output = []
-              
-              new_column_name = column + "_transformed"
-              if new_column_name in df.columns:
-                       logging.warning(f"Column '{new_column_name}' already exists. Overwriting the column.")
-              df[new_column_name] = output
-              print(f"Transformation is done for the column '{column}'. New column '{new_column_name}' added.")
-
+                      print("Processing model response...")
+                      output = list(Edges_Verification(Response_Content))
+                  except:
+                      print("Automatic extraction failed. Please review the response content below:")
+                      print(Response_Content)
+                      print("\nPlease manually enter the list in a valid Python list format, e.g., ['item1', 'item2', ...]")
+                      output_str = input("Enter the list: ")
+                      try:
+                          output = ast.literal_eval(output_str)
+                          if not isinstance(output, list):
+                              raise ValueError("Entered data is not a list.")
+                      except Exception as e:
+                          print(f"Error in manual input: {e}")
+                          output = []
+                      results.extend(output)    
+            new_column_name = column + "_transformed"
+            if new_column_name in df.columns:
+                    logging.warning(f"Column '{new_column_name}' already exists. Overwriting the column.")
+            df[new_column_name] = results
+            print(f"Transformation is done for the column '{column}'. New column '{new_column_name}' added.")
             except Exception as e:
-              logging.error("An error occurred during the transformation process: ", exc_info=True)
-            #Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens = get_completion(messages, Model="gpt-4")
+                logging.error("An error occurred during the transformation process: ", exc_info=True)
 
     # Initial display of pairs
     display_current_pairs()
