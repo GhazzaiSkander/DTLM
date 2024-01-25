@@ -6,14 +6,18 @@
 
 import logging
 import ipywidgets as widgets
+from datetime import datetime
+# Example usage
 from .completion import get_completion
 from .verification import Edges_Verification
 from .prompt import simple_pormpt_template
 from .counter import split_list_by_token_limit
+from .history import log_experiment
+from sklearn.metrics import accuracy_score
 
-
-def simple_transformation(df):
-
+def generate_experiment_id():
+    return datetime.now().strftime("exp_%Y%m%d_%H%M%S")
+def simple_transformation(df,dataset_name="Unknown",filename="experiment_results.csv"):
     # Dropdown for column selection
     column_selector = widgets.Dropdown(
         options=df.columns,
@@ -99,14 +103,15 @@ def simple_transformation(df):
                 print(f"Input: {inp} -> Output: {out}")
             # Add your processing logic here
             #print("Prompt ", description,  example_pairs, column )
+            Total_Nb_Token=0
             for subpart in sublists :
                 try :
                   print("Generating messages for model...")
                   messages=simple_pormpt_template(example_pairs,description,subpart)
                   print(messages)
                   print("Getting completion from the model...")
-                  #Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages)
                   Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages)
+                  Total_Nb_Token+=Prompt_Nb_Tokens + Response_Nb_Tokens 
                   try:
                       print("Processing model response...")
                       output = list(Edges_Verification(Response_Content))
@@ -130,6 +135,19 @@ def simple_transformation(df):
                     logging.warning(f"Column '{new_column_name}' already exists. Overwriting the column.")
             df[new_column_name] = results
             print(f"Transformation is done for the column '{column}'. New column '{new_column_name}' added.")
+            
+            experiment_data = {
+                    "experiment_id": generate_experiment_id(),
+                    "Dataset_Name": dataset_name,
+                    "Column_name": column,
+                    "inputs": inputs,
+                    "description_keywords": description,
+                    "example_pairs": example_pairs,
+                    "output": results,
+                    "accuracy": accuracy_score(inputs,results),
+                    "total_number_of_token": Total_Nb_Token
+                }
+            log_experiment(experiment_data)    
 
 
     # Initial display of pairs
