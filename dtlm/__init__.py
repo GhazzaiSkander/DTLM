@@ -3,7 +3,7 @@
 
 # In[ ]:
 
-
+from .history import log_experiment
 from .transformation import simple_transformation
 from .prompt import simple_pormpt_template
 from .completion import get_completion
