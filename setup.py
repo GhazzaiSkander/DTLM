@@ -23,6 +23,7 @@ setup(
         'pandas',  # If your library depends on pandas
         'ipywidgets',  # If you are using ipywidgets
         'tiktoken',
+        'scikit-learn'
         # Add other dependencies as needed
     ],
     classifiers=[
