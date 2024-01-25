@@ -122,14 +122,15 @@ def simple_transformation(df):
                       except Exception as e:
                           print(f"Error in manual input: {e}")
                           output = []
-                      results.extend(output)    
+                  results.extend(output)
+                except Exception as e:
+                    logging.error("An error occurred during the transformation process: ", exc_info=True)
             new_column_name = column + "_transformed"
             if new_column_name in df.columns:
                     logging.warning(f"Column '{new_column_name}' already exists. Overwriting the column.")
             df[new_column_name] = results
             print(f"Transformation is done for the column '{column}'. New column '{new_column_name}' added.")
-            except Exception as e:
-                logging.error("An error occurred during the transformation process: ", exc_info=True)
+
 
     # Initial display of pairs
     display_current_pairs()
