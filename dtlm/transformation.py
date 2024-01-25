@@ -108,7 +108,7 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
                 try :
                   print("Generating messages for model...")
                   messages=simple_pormpt_template(example_pairs,description,subpart)
-                  print(messages)
+                  #print(messages)
                   print("Getting completion from the model...")
                   Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages)
                   Total_Nb_Token+=Prompt_Nb_Tokens + Response_Nb_Tokens 
