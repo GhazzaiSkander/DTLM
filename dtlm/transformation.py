@@ -151,7 +151,7 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
                     "total_number_of_token": Total_Nb_Token
                 }
             log_experiment(experiment_data)
-            print("The transformation is now complet
+            print("The transformation is now complete")
 
     
 
