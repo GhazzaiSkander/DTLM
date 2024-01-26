@@ -17,7 +17,7 @@ from sklearn.metrics import accuracy_score
 
 def generate_experiment_id():
     return datetime.now().strftime("exp_%Y%m%d_%H%M%S")
-def simple_transformation(df,dataset_name="Unknown",filename="experiment_results.csv"):
+def simple_transformation(df,dataset_name="Unknown",filename="experiment_results.csv",verbose=False):
     # Dropdown for column selection
     column_selector = widgets.Dropdown(
         options=df.columns,
@@ -44,9 +44,6 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
 
     # Store example pairs
     example_pairs = []
-
-
-
     # Function to display current pairs
     def display_current_pairs():
         """
@@ -57,12 +54,13 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
         """
         with output_area:
             output_area.clear_output()
-            if example_pairs:
-                print("Current pairs:")
-                for i, (inp, out) in enumerate(example_pairs, start=1):
-                    print(f"{i}. Input: {inp} -> Output: {out}")
-            else:
-                print("No pairs added yet.")
+            if verbose :
+                if example_pairs:
+                    print("Current pairs:")
+                    for i, (inp, out) in enumerate(example_pairs, start=1):
+                        print(f"{i}. Input: {inp} -> Output: {out}")
+                else:
+                    print("No pairs added yet.")
 
     # Function to add example pair
     def add_example_pair(b):
@@ -99,18 +97,23 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
             print(f"Transformation Description: {description}")
             print("Processing the following pairs:")
             results=[]
-            for inp, out in example_pairs:
-                print(f"Input: {inp} -> Output: {out}")
+            if example_pairs:
+                for inp, out in example_pairs:
+                    print(f"Input: {inp} -> Output: {out}")
             # Add your processing logic here
             #print("Prompt ", description,  example_pairs, column )
             Total_Nb_Token=0
             for subpart in sublists :
                 try :
-                  print("Generating messages for model...")
+                  if verbose :
+                      print("Generating messages for model...")
                   messages=simple_pormpt_template(example_pairs,description,subpart)
-                  #print(messages)
-                  print("Getting completion from the model...")
+                  if verbose :  
+                      print(messages)
+                      print("Getting completion from the model...")
                   Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages)
+                  if verbose: 
+                      print(Response_Content)
                   Total_Nb_Token+=Prompt_Nb_Tokens + Response_Nb_Tokens 
                   try:
                       print("Processing model response...")
@@ -128,6 +131,7 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
                           print(f"Error in manual input: {e}")
                           output = []
                   results.extend(output)
+                  print(len(results))
                 except Exception as e:
                     logging.error("An error occurred during the transformation process: ", exc_info=True)
             new_column_name = column + "_transformed"
@@ -135,7 +139,6 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
                     logging.warning(f"Column '{new_column_name}' already exists. Overwriting the column.")
             df.loc[:, new_column_name] = results
             print(f"Transformation is done for the column '{column}'. New column '{new_column_name}' added.")
-            
             experiment_data = {
                     "experiment_id": generate_experiment_id(),
                     "Dataset_Name": dataset_name,
@@ -147,7 +150,10 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
                     "accuracy": accuracy_score(inputs,results),
                     "total_number_of_token": Total_Nb_Token
                 }
-            log_experiment(experiment_data)    
+            log_experiment(experiment_data)
+            print("The transformation is now complet
+
+    
 
 
     # Initial display of pairs
