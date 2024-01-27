@@ -139,28 +139,43 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
                     logging.warning(f"Column '{new_column_name}' already exists. Overwriting the column.")
             try :
                 df.loc[:, new_column_name] = results
+                print(f"Transformation is done for the column '{column}'. New column '{new_column_name}' added.")
+
             except Exception as e:
-                print("An error occurred during the integration of the results")
+                print("An error occurred during the integration of the results into the dataframe")
                 print(results)
                 print(len(results))
-                
-            print(f"Transformation is done for the column '{column}'. New column '{new_column_name}' added.")
-            experiment_data = {
-                    "experiment_id": generate_experiment_id(),
-                    "Dataset_Name": dataset_name,
-                    "Column_name": column,
-                    "inputs": inputs,
-                    "description_keywords": description,
-                    "example_pairs": example_pairs,
-                    "output": results,
-                    "accuracy": accuracy_score(inputs,results),
-                    "total_number_of_token": Total_Nb_Token
-                }
-            log_experiment(experiment_data)
-            print("The transformation is now complete")
-            if verbose :
-                print("The is the data add it in the experiment_data ",experiment_data)
+            if len(results)==len(inputs):
+                experiment_data = {
+                        "experiment_id": generate_experiment_id(),
+                        "Dataset_Name": dataset_name,
+                        "Column_name": column,
+                        "inputs": inputs,
+                        "description_keywords": description,
+                        "example_pairs": example_pairs,
+                        "output": results,
+                        "accuracy": accuracy_score(inputs,results),
+                        "total_number_of_token": Total_Nb_Token
+                    }
+                log_experiment(experiment_data)
+                print("The transformation is now complete")
+                if verbose :
+                    print("The is the data add it in the experiment_data ",experiment_data)
 
+            else :
+                experiment_data = {
+                        "experiment_id": generate_experiment_id(),
+                        "Dataset_Name": dataset_name,
+                        "Column_name": column,
+                        "inputs": inputs,
+                        "description_keywords": description,
+                        "example_pairs": example_pairs,
+                        "output": results,
+                        "accuracy": "N/A",
+                        "total_number_of_token": Total_Nb_Token
+                    }
+                log_experiment(experiment_data)
+                print("The transformation is now complete")
 
     
 
