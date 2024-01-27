@@ -106,7 +106,9 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
             for subpart in sublists :
                 try :
                   if verbose :
+                      print("Working with batch number", subpart.index(sublists))
                       print("Generating messages for model...")
+                  print("Processing this number of element" , len(subpart))
                   messages=simple_pormpt_template(example_pairs,description,subpart)
                   if verbose :  
                       print(messages)
@@ -130,6 +132,7 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
                       except Exception as e:
                           print(f"Error in manual input: {e}")
                           output = []
+                  print("The number of element that has been processed" , len(output))
                   results.extend(output)
                   print(len(results))
                 except Exception as e:
