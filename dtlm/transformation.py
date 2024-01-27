@@ -158,6 +158,9 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
                 }
             log_experiment(experiment_data)
             print("The transformation is now complete")
+            if verbose :
+                print("The is the data add it in the experiment_data ",experiment_data)
+
 
     
 
