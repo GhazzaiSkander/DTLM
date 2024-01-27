@@ -175,6 +175,40 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
     display(column_selector, description_input, input_example, output_example, add_example_button, process_examples_button, output_area)
 
 
+def basic_transformation(df,column,example_pairs,description,input,dataset_name="Unknown",filename="experiment_results.csv",verbose=False):
+      messages=simple_pormpt_template(example_pairs,description,subpart)
+      Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages)
+      output = list(Edges_Verification(Response_Content))
+      new_column_name = column + "_transformed"+description
+      try :
+        df.loc[:, new_column_name] = results
+        print(f"Transformation is done for the column '{column}'. New column '{new_column_name}' added.")
+        experiment_data = {
+                      "experiment_id": generate_experiment_id(),
+                      "Dataset_Name": dataset_name,
+                      "Column_name": column,
+                      "inputs": inputs,
+                      "description_keywords": description,
+                      "example_pairs": example_pairs,
+                      "output": results,
+                      "accuracy": accuracy_score(inputs,results),
+                      "total_number_of_token": Total_Nb_Token
+                  }
+      except :
+        print("problem with the results inputs and results")
+        experiment_data = {
+                      "experiment_id": generate_experiment_id(),
+                      "Dataset_Name": dataset_name,
+                      "Column_name": column,
+                      "inputs": inputs,
+                      "description_keywords": description,
+                      "example_pairs": example_pairs,
+                      "output": results,
+                      "accuracy": "Corrupted_function",
+                      "total_number_of_token": Total_Nb_Token
+                  }
+
+
 # In[ ]:
 
 
