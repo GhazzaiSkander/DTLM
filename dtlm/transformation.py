@@ -5,6 +5,8 @@
 
 
 import logging
+
+import time
 import ipywidgets as widgets
 from datetime import datetime
 # Example usage
@@ -107,6 +109,7 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
             for subpart in sublists :
                 try :
                   if verbose :
+                      start_time = time.time()
                       print("Working with batch number", iteration)
                       iteration+=1
                       print("Generating messages for model...")
@@ -135,6 +138,7 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
                           print(f"Error in manual input: {e}")
                           output = []
                   print("The number of element that has been processed" , len(output))
+                  print("--- %s seconds ---" % (time.time() - start_time))
                   results.extend(output)
                   print(len(results))
                 except Exception as e:
