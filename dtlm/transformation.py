@@ -103,10 +103,12 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
             # Add your processing logic here
             #print("Prompt ", description,  example_pairs, column )
             Total_Nb_Token=0
+            iteration=0
             for subpart in sublists :
                 try :
                   if verbose :
-                      print("Working with batch number", subpart.index(sublists))
+                      print("Working with batch number", iteration)
+                      iteration+=1
                       print("Generating messages for model...")
                   print("Processing this number of element" , len(subpart))
                   messages=simple_pormpt_template(example_pairs,description,subpart)
