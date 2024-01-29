@@ -143,8 +143,8 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
                   if len(output) !=len(subpart) :
                         # Splitting the list into two halves
                         mid_index = len(subpart) // 2
-                        first_half = values[:mid_index]
-                        second_half = values[mid_index:]
+                        first_half = subpart[:mid_index]
+                        second_half = subpart[mid_index:]
                         #####working with the first part 
                         messages=simple_pormpt_template(example_pairs,description,first_half)
                         Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages)
