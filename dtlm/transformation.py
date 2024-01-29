@@ -140,8 +140,24 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
                           
                   print("The number of element that has been processed" , len(output))
                   print("--- %s seconds ---" % (time.time() - start_time))
-                  results.extend(output)
-                  print(len(results))
+                  if len(output) !=len(subpart) :
+                        # Splitting the list into two halves
+                        mid_index = len(subpart) // 2
+                        first_half = values[:mid_index]
+                        second_half = values[mid_index:]
+                        #####working with the first part 
+                        messages=simple_pormpt_template(example_pairs,description,first_half)
+                        Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages)
+                        output_1 = list(Edges_Verification(Response_Content))
+                        #####Working for the second part
+                        messages=simple_pormpt_template(example_pairs,description,second_half)
+                        Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages)
+                        output_2 = list(Edges_Verification(Response_Content))
+                        results.extend(output_1)
+                        results.extend(output_2)
+                  else:     
+                      results.extend(output)
+                      print(len(results))
                 except Exception as e:
                     logging.error("An error occurred during the transformation process: ", exc_info=True)
             new_column_name = column + "_transformed"
