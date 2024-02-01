@@ -114,7 +114,7 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
                       iteration+=1
                       print("Generating messages for model...")
                   print("Processing this number of element" , len(subpart))
-                  messages=simple_pormpt_template(example_pairs,description,subpart)
+                  messages=simple_prompt_template(example_pairs,description,subpart)
                   if verbose :  
                       print(messages)
                       print("Getting completion from the model...")
@@ -146,11 +146,11 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
                         first_half = subpart[:mid_index]
                         second_half = subpart[mid_index:]
                         #####working with the first part 
-                        messages=simple_pormpt_template(example_pairs,description,first_half)
+                        messages=simple_prompt_template(example_pairs,description,first_half)
                         Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages)
                         output_1 = list(Edges_Verification(Response_Content))
                         #####Working for the second part
-                        messages=simple_pormpt_template(example_pairs,description,second_half)
+                        messages=simple_prompt_template(example_pairs,description,second_half)
                         Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages)
                         output_2 = list(Edges_Verification(Response_Content))
                         results.extend(output_1)
@@ -217,7 +217,7 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
 
 
 def basic_transformation(df,column,example_pairs,description,input,dataset_name="Unknown",filename="experiment_results.csv",verbose=False):
-      messages=simple_pormpt_template(example_pairs,description,subpart)
+      messages=simple_prompt_template(example_pairs,description,subpart)
       Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages)
       output = list(Edges_Verification(Response_Content))
       new_column_name = column + "_transformed"+description
