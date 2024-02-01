@@ -3,63 +3,53 @@
 
 # In[1]:
 
+#!/usr/bin/env python
+# coding: utf-8
 
-def simple_pormpt_template(Input_Output_Pair_Examples,Desired_Format_Keywords,inputs):
-      """
-      Generates a formatted prompt for a large language model to transform data values.
+def simple_prompt_template(Input_Output_Pair_Examples, Desired_Format_Keywords, inputs):
+    """
+    Generates a formatted prompt for a large language model to transform data values based on explicit examples and keywords.
 
-      This function creates a prompt that instructs a language model to transform input data values into a specified format. It uses examples of input-output pairs and desired format keywords to guide the transformation. The function supports different modes based on whether input-output examples and/or keywords are provided.
+    This function creates a structured prompt incorporating explicit instructions for transforming data values into a specified format,
+    emphasizing returning the original value if the transformation is uncertain and ensuring the number of outputs matches the number of inputs.
 
-      Parameters:
-      - Input_Output_Pair_Examples (list of tuples): A list of tuples where each tuple represents an example input and its corresponding transformed output.
-      - Desired_Format_Keywords (str): Keywords or a phrase that describe the desired output format.
-      - inputs (any): The input data values that need to be transformed.
+    Parameters:
+    - Input_Output_Pair_Examples (list of tuples): Example input-output pairs.
+    - Desired_Format_Keywords (str): Keywords describing the desired output format.
+    - inputs (list): Input data values to be transformed.
 
-      Returns:
-      - list: A list of dictionaries, each representing a part of the prompt with a specific role ('system' or 'user') and content.
+    Returns:
+    - list: A list of dictionaries for structured interaction with a language model.
 
-      Raises:
-      - ValueError: If no input examples or format keywords are provided.
+    Raises:
+    - ValueError: If both Input_Output_Pair_Examples and Desired_Format_Keywords are missing.
 
-      Note:
-      - The function is designed to work with large language models and assumes a specific prompt structure that such models can interpret.
-      """
-      messages = [{"role": "system", "content": "You are a helpful assistant that transforms values into the specified format."}]
-      if Input_Output_Pair_Examples:
-          example_input = [pair[0] for pair in Input_Output_Pair_Examples]
-          example_output = [pair[1] for pair in Input_Output_Pair_Examples]
-          if Desired_Format_Keywords:
-              prompt_introduction = f"""Given different values in data format, the objective is to transform individual values to align to the new format.
-  The model should be evaluated on its ability to transform all of the values to a specified format with 100% accuracy."""
-              prompt_corps = f"""The value to be transformed into the appropriate format:{Desired_Format_Keywords}
-  **Values**: {list(example_input)}
-  **Output**: {list(example_output)}
-  **Values**: {inputs}
-  **Output**:"""
-              messages.append({"role": "user", "content": prompt_introduction + prompt_corps})
-          else:
-              prompt_introduction = f"""Given a value in data format, the objective is to transform the value to align to the new format.
-  The model should be able to transform any value to the specified format with 100% accuracy.\n"""
-              prompt_corps = f"""The value to be transformed into the appropriate format:
-  **Values**: {list(example_input)}
-  **Output**: {list(example_output)}
-  **Value**: {inputs}
-  **Output**:"""
-              messages.append({"role": "user", "content": prompt_introduction + prompt_corps})
-      else:
-          if Desired_Format_Keywords:
-              prompt_introduction = f"""Given a value in data format, the objective is to transform the value to align to the new format.The model should be able to transform any value to the specified format with 100% accuracy."""
-              prompt_corps = f"""\nThe value to be transformed into the appropriate format: {Desired_Format_Keywords}.
-  **Value**: {inputs}
-  **Output**:"""
-              messages.append({"role": "user", "content": prompt_introduction + prompt_corps})
-          else:
-              print("NO INPUTS has been provided !!")
-              prompt_introduction = f"""Given a value in data format, the objective is to transform the value into a new format.
-  The model should be able to transform any value to a new format with 100% accuracy."""
-              prompt_corps = f"""The value to be transformed:
-  **Value**: {inputs}
-  **Output**:"""
-              messages.append({"role": "user", "content": prompt_introduction + prompt_corps})
-      return messages
+    Note:
+    - Designed for structured prompts in large language models.
+    """
+    if not Input_Output_Pair_Examples and not Desired_Format_Keywords:
+        raise ValueError("Input examples or format keywords must be provided.")
 
+    messages = [{"role": "system", "content": "You are a helpful assistant that transforms values into the specified format. If unsure about any transformation, return the original value. Ensure the number of outputs matches the number of inputs exactly."}]
+
+    prompt_introduction = "Given different values in data format, the objective is to transform individual values to align to the new format. The model should transform each provided value with 100% accuracy. If the model is unsure about any transformation, it should return the original value. The number of transformed values in the output should exactly match the number of input values."
+
+    if Input_Output_Pair_Examples:
+        example_input = [pair[0] for pair in Input_Output_Pair_Examples]
+        example_output = [pair[1] for pair in Input_Output_Pair_Examples]
+        examples_section = f"**Examples**:{len(example_input)} number of examples \nValues: {list(example_input)}\nExpected Output: {list(example_output)}"
+    else:
+        examples_section = ""
+
+    if Desired_Format_Keywords:
+        keywords_section = f"The value to be transformed into the appropriate format: {Desired_Format_Keywords}\n"
+    else:
+        keywords_section = ""
+
+    inputs_section = f"**Inputs**: {inputs} Ensure the output count matches the number of inputs {len(inputs)}.\n**Expected Output**: "
+
+    full_prompt = f"{prompt_introduction}\n\n{examples_section}\n\n{keywords_section}\n{inputs_section}"
+
+    messages.append({"role": "user", "content": full_prompt})
+
+    return messages
