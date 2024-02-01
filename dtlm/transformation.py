@@ -12,7 +12,7 @@ from datetime import datetime
 # Example usage
 from .completion import get_completion
 from .verification import Edges_Verification
-from .prompt import simple_pormpt_template
+from .prompt import simple_prompt_template
 from .counter import split_list_by_token_limit
 from .history import log_experiment
 from sklearn.metrics import accuracy_score
