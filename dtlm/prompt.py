@@ -6,7 +6,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-def simple_prompt_template(Input_Output_Pair_Examples, Desired_Format_Keywords, inputs):
+def simple_pormpt_template(Input_Output_Pair_Examples, Desired_Format_Keywords, inputs):
     """
     Generates a formatted prompt for a large language model to transform data values based on explicit examples and keywords.
 
