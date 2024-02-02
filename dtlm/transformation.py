@@ -20,7 +20,7 @@ from sklearn.metrics import accuracy_score
 
 def generate_experiment_id():
     return datetime.now().strftime("exp_%Y%m%d_%H%M%S")
-def simple_transformation(df, Model="gpt-4",dataset_name="Unknown",filename="experiment_results.csv",verbose=False):
+def simple_transformation(df, Model="gpt-4",client=None,dataset_name="Unknown",filename="experiment_results.csv",verbose=False):
     # Dropdown for column selection
     column_selector = widgets.Dropdown(
         options=df.columns,
@@ -120,7 +120,7 @@ def simple_transformation(df, Model="gpt-4",dataset_name="Unknown",filename="exp
                   if verbose :  
                       print(messages)
                       print("Getting completion from the model...")
-                  Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages,Model)
+                  Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages,Model,client)
                   if verbose: 
                       print(Response_Content)
                   Total_Nb_Token+=Prompt_Nb_Tokens + Response_Nb_Tokens 
@@ -151,13 +151,13 @@ def simple_transformation(df, Model="gpt-4",dataset_name="Unknown",filename="exp
                         #messages=simple_prompt_template(example_pairs,description,first_half)
                         messages=generate_prompt(example_pairs,description,first_half,Model)
 
-                        Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages,Model)
+                        Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages,Model,client)
                         output_1 = list(Edges_Verification(Response_Content))
                         #####Working for the second part
                         #messages=simple_prompt_template(example_pairs,description,second_half)
                         messages=generate_prompt(example_pairs,description,second_half,Model)
 
-                        Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages,Model)
+                        Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages,Model,client)
                         output_2 = list(Edges_Verification(Response_Content))
                         results.extend(output_1)
                         results.extend(output_2)
