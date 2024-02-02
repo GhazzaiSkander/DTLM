@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
-
-
-get_ipython().system('pip install openai==0.27.0.')
+#get_ipython().system('pip install openai==0.27.0.')
 import openai
+from mistralai.models.chat_completion import ChatMessage
+
 def get_completion(messages, Model="gpt-4"):
     """
     Retrieves a completion from a specified language model based on the provided messages.
@@ -25,15 +24,22 @@ def get_completion(messages, Model="gpt-4"):
     Note:
     - This function requires access to OpenAI's API and the appropriate API keys to function properly.
     """
-    response=openai.ChatCompletion.create(
-          model=Model,
-          messages=messages,
-          temperature=0)
-    # Extract relevant information from the response
-    Response_Content = response.choices[0].message["content"]  # The content of the model's response
-    Prompt_Nb_Tokens = response["usage"]["prompt_tokens"]  # The number of tokens used in the prompt
-    Response_Nb_Tokens = response["usage"]["completion_tokens"]  # The number of tokens used in the completion
+    if model =="gpt-4":
+      response=openai.ChatCompletion.create(
+            model=Model,
+            messages=messages,
+            temperature=0)
+      # Extract relevant information from the response
+      Response_Content = response.choices[0].message["content"]  # The content of the model's response
+      Prompt_Nb_Tokens = response["usage"]["prompt_tokens"]  # The number of tokens used in the prompt
+      Response_Nb_Tokens = response["usage"]["completion_tokens"]  # The number of tokens used in the completion
 
-    # Return the extracted information as a tuple
-    return Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens
+      # Return the extracted information as a tuple
+      return Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens
+    elif model=="mistral-tiny":
+      chat_response=client.chat(model=model,messages=messages)
+      choice=chat_response.choices[0] # Access the first choic
+      usage=chat_response.usage  # Acces the tokenn count
+      message_content= choice.message.content #Extracct the content of the message.
+      return message_content,usage.prompt_tokens , usage.completion_tokens
 
