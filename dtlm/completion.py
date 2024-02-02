@@ -34,12 +34,12 @@ def get_completion(messages, model="gpt-4", client=None):
 
         return Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens
 
-    elif model == "mistral":
+    elif model == "mistral-tiny":
         if not client:
             raise ValueError("MistralClient instance must be provided for 'mistral' model.")
         chat_response = client.chat(model=model, messages=messages)
         choice = chat_response.choices[0]  # Access the first choice
         usage = chat_response.usage  # Access the token count
-        message_content = choice.message["content"]  # Extract the content of the message.
+        message_content = choice.message.content  # Extract the content of the message.
         
         return message_content, usage.prompt_tokens, usage.completion_tokens
