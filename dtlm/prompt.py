@@ -37,7 +37,7 @@ def simple_prompt_template(Input_Output_Pair_Examples, Desired_Format_Keywords, 
     if Input_Output_Pair_Examples:
         example_input = [pair[0] for pair in Input_Output_Pair_Examples]
         example_output = [pair[1] for pair in Input_Output_Pair_Examples]
-        examples_section = f"**Examples**:{len(example_input)} number of examples \nValues: {list(example_input)}\nExpected Output: {list(example_output)}"
+        examples_section = f"**Examples**:{len(example_input)} number of examples \nValues: {list(example_input)}\nOutput: {list(example_output)}"
     else:
         examples_section = ""
 
@@ -46,7 +46,7 @@ def simple_prompt_template(Input_Output_Pair_Examples, Desired_Format_Keywords, 
     else:
         keywords_section = ""
 
-    inputs_section = f"**Inputs**: {inputs} Ensure the output count matches the number of inputs {len(inputs)}.\n**Expected Output**: "
+    inputs_section = f"**Inputs**: {inputs} Ensure the output count matches the number of inputs {len(inputs)}.\n**Output**: "
 
     full_prompt = f"{prompt_introduction}\n\n{examples_section}\n\n{keywords_section}\n{inputs_section}"
 
