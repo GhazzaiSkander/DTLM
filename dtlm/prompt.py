@@ -73,7 +73,7 @@ def generate_prompt(Input_Output_Pair_Examples: List[Tuple[str, str]], Desired_F
     """
     if not Input_Output_Pair_Examples and not Desired_Format_Keywords:
         raise ValueError("Input examples or format keywords must be provided.")
-    if mode not in ['openai', 'mistral']:
+    if mode not in ['openai', 'mistral-tiny']:
         raise ValueError("Unsupported mode. Please choose 'openai' or 'mistral'.")
 
     system_message = "You are a helpful assistant that transforms values into the specified format. If unsure about any transformation, return the original value. Ensure the number of outputs matches the number of inputs exactly."
