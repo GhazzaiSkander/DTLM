@@ -19,8 +19,9 @@ setup(
     packages=find_packages(),
     install_requires=[
         # List all the dependencies here
-        'openai==0.27.0',  # For example, if you are using OpenAI's API
+        'openai==0.27.0', # For example, if you are using OpenAI's API
         'pandas',  # If your library depends on pandas
+        'mistralai',# For mistral _update
         'ipywidgets',  # If you are using ipywidgets
         'tiktoken',
         'scikit-learn'
