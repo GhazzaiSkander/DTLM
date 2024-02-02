@@ -36,7 +36,7 @@ def get_completion(messages, model="gpt-4"):
 
       # Return the extracted information as a tuple
       return Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens
-    elif model=="mistral-tiny":
+    elif model=="mistral":
       chat_response=client.chat(model=model,messages=messages)
       choice=chat_response.choices[0] # Access the first choic
       usage=chat_response.usage  # Acces the tokenn count
