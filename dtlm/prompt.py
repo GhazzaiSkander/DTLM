@@ -97,5 +97,6 @@ def generate_prompt(Input_Output_Pair_Examples: List[Tuple[str, str]], Desired_F
     if mode == 'openai':
         # For OpenAI, return a single string prompt or as part of a dictionary if additional context is needed
         return [{"role": "system", "content": system_message}, {"role": "user", "content": full_prompt}]
-    elif mode == 'mistral-tiny':
+    elif mode == 'mistral':
+        print(mode)
         return [ChatMessage(role="system", content=system_message), ChatMessage(role="user", content=full_prompt)]
