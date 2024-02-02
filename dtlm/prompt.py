@@ -5,7 +5,7 @@
 
 #!/usr/bin/env python
 # coding: utf-8
-
+from typing import List, Tuple, Union, Dict
 from mistralai.models.chat_completion import ChatMessage
 def simple_prompt_template(Input_Output_Pair_Examples, Desired_Format_Keywords, inputs):
     """
