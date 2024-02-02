@@ -5,7 +5,7 @@
 import openai
 from mistralai.models.chat_completion import ChatMessage
 
-def get_completion(messages, Model="gpt-4"):
+def get_completion(messages, model="gpt-4"):
     """
     Retrieves a completion from a specified language model based on the provided messages.
 
