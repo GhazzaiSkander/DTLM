@@ -13,13 +13,14 @@ from datetime import datetime
 from .completion import get_completion
 from .verification import Edges_Verification
 from .prompt import simple_prompt_template
+from .prompt import generate_prompt
 from .counter import split_list_by_token_limit
 from .history import log_experiment
 from sklearn.metrics import accuracy_score
 
 def generate_experiment_id():
     return datetime.now().strftime("exp_%Y%m%d_%H%M%S")
-def simple_transformation(df,dataset_name="Unknown",filename="experiment_results.csv",verbose=False):
+def simple_transformation(df, Model="gpt-4",dataset_name="Unknown",filename="experiment_results.csv",verbose=False):
     # Dropdown for column selection
     column_selector = widgets.Dropdown(
         options=df.columns,
@@ -114,11 +115,12 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
                       iteration+=1
                       print("Generating messages for model...")
                   print("Processing this number of element" , len(subpart))
-                  messages=simple_prompt_template(example_pairs,description,subpart)
+                  #messages=simple_prompt_template(example_pairs,description,subpart)
+                  messages=generate_prompt(example_pairs,description,subpart,Model)
                   if verbose :  
                       print(messages)
                       print("Getting completion from the model...")
-                  Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages)
+                  Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages,Model)
                   if verbose: 
                       print(Response_Content)
                   Total_Nb_Token+=Prompt_Nb_Tokens + Response_Nb_Tokens 
@@ -146,12 +148,16 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
                         first_half = subpart[:mid_index]
                         second_half = subpart[mid_index:]
                         #####working with the first part 
-                        messages=simple_prompt_template(example_pairs,description,first_half)
-                        Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages)
+                        #messages=simple_prompt_template(example_pairs,description,first_half)
+                        messages=generate_prompt(example_pairs,description,first_half,Model)
+
+                        Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages,Model)
                         output_1 = list(Edges_Verification(Response_Content))
                         #####Working for the second part
-                        messages=simple_prompt_template(example_pairs,description,second_half)
-                        Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages)
+                        #messages=simple_prompt_template(example_pairs,description,second_half)
+                        messages=generate_prompt(example_pairs,description,second_half,Model)
+
+                        Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages,Model)
                         output_2 = list(Edges_Verification(Response_Content))
                         results.extend(output_1)
                         results.extend(output_2)
@@ -218,6 +224,7 @@ def simple_transformation(df,dataset_name="Unknown",filename="experiment_results
 
 def basic_transformation(df,column,example_pairs,description,input,dataset_name="Unknown",filename="experiment_results.csv",verbose=False):
       messages=simple_prompt_template(example_pairs,description,subpart)
+
       Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(messages)
       output = list(Edges_Verification(Response_Content))
       new_column_name = column + "_transformed"+description
