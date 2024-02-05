@@ -10,5 +10,6 @@ from .prompt import simple_prompt_template
 from .prompt import generate_prompt
 from .completion import get_completion
 from .verification import Edges_Verification
+from .verification import Edges_Verification_Improved
 from .counter import split_list_by_token_limit
 
