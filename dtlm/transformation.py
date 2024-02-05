@@ -17,6 +17,7 @@ from .prompt import generate_prompt
 from .counter import split_list_by_token_limit
 from .history import log_experiment
 from sklearn.metrics import accuracy_score
+from .verification import Edges_Verification_Improved
 
 def generate_experiment_id():
     return datetime.now().strftime("exp_%Y%m%d_%H%M%S")
@@ -130,8 +131,9 @@ def simple_transformation(df, Model="gpt-4",client=None,dataset_name="Unknown",f
                   except:
                       print("Automatic extraction failed. Please review the response content below:")
                       print(Response_Content)
-                      print("\nPlease manually enter the list in a valid Python list format, e.g., ['item1', 'item2', ...]")
-                      output_str = input("Enter the list: ")
+                      #print("\nPlease manually enter the list in a valid Python list format, e.g., ['item1', 'item2', ...]")
+                      
+                      output_str = Edges_Verification_Improved(Response_Content)
                       try:
                           output = ast.literal_eval(output_str)
                           if not isinstance(output, list):
