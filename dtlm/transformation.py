@@ -18,6 +18,7 @@ from .counter import split_list_by_token_limit
 from .history import log_experiment
 from sklearn.metrics import accuracy_score
 from .verification import Edges_Verification_Improved
+import ast
 
 def generate_experiment_id():
     return datetime.now().strftime("exp_%Y%m%d_%H%M%S")
