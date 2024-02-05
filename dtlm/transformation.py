@@ -20,8 +20,8 @@ from sklearn.metrics import accuracy_score
 from .verification import Edges_Verification_Improved
 import ast
 
-def generate_experiment_id():
-    return datetime.now().strftime("exp_%Y%m%d_%H%M%S")
+def generate_experiment_id(Model="gpt-4"):
+    return Model+datetime.now().strftime("exp_%Y%m%d_%H%M%S")
 def simple_transformation(df, Model="gpt-4",client=None,dataset_name="Unknown",filename="experiment_results.csv",verbose=False):
     # Dropdown for column selection
     column_selector = widgets.Dropdown(
@@ -148,6 +148,7 @@ def simple_transformation(df, Model="gpt-4",client=None,dataset_name="Unknown",f
                   print("The number of element that has been processed" , len(output))
                   print("--- %s seconds ---" % (time.time() - start_time))
                   if len(output) !=len(subpart) :
+                        print("len(output) !=len(subpart) this condition is True")
                         # Splitting the list into two halves
                         mid_index = len(subpart) // 2
                         first_half = subpart[:mid_index]
@@ -183,8 +184,14 @@ def simple_transformation(df, Model="gpt-4",client=None,dataset_name="Unknown",f
                 print(results)
                 print(len(results))
             if len(results)==len(inputs):
+                try :
+                    Unchanged_values=accuracy_score(inputs,results)
+                except :
+                    print("the accuracy couldn't be calculated we are returning a non values ")
+                    Unchanged_values="N/A"
+                    
                 experiment_data = {
-                        "experiment_id": generate_experiment_id(),
+                        "experiment_id": generate_experiment_id(Model),
                         "Dataset_Name": dataset_name,
                         "Column_name": column,
                         "inputs": inputs,
@@ -201,7 +208,7 @@ def simple_transformation(df, Model="gpt-4",client=None,dataset_name="Unknown",f
 
             else :
                 experiment_data = {
-                        "experiment_id": generate_experiment_id(),
+                        "experiment_id": generate_experiment_id(Model),
                         "Dataset_Name": dataset_name,
                         "Column_name": column,
                         "inputs": inputs,
@@ -237,7 +244,7 @@ def basic_transformation(df,column,example_pairs,description,input,dataset_name=
         df.loc[:, new_column_name] = results
         print(f"Transformation is done for the column '{column}'. New column '{new_column_name}' added.")
         experiment_data = {
-                      "experiment_id": generate_experiment_id(),
+                      "experiment_id": generate_experiment_id(Model),
                       "Dataset_Name": dataset_name,
                       "Column_name": column,
                       "inputs": inputs,
@@ -250,7 +257,7 @@ def basic_transformation(df,column,example_pairs,description,input,dataset_name=
       except :
         print("problem with the results inputs and results")
         experiment_data = {
-                      "experiment_id": generate_experiment_id(),
+                      "experiment_id": generate_experiment_id(Model),
                       "Dataset_Name": dataset_name,
                       "Column_name": column,
                       "inputs": inputs,
