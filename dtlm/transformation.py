@@ -135,13 +135,15 @@ def simple_transformation(df, Model="gpt-4",client=None,dataset_name="Unknown",f
                       #print("\nPlease manually enter the list in a valid Python list format, e.g., ['item1', 'item2', ...]")
                       
                       output_str = Edges_Verification_Improved(Response_Content)
+                      output=list(output_str)
+                      """
                       try:
                           output = ast.literal_eval(output_str)
                           if not isinstance(output, list):
                               raise ValueError("Entered data is not a list.")
                       except Exception as e:
                           print(f"Error in manual input: {e}")
-                          output = []
+                          output = []"""
                           
                   print("The number of element that has been processed" , len(output))
                   print("--- %s seconds ---" % (time.time() - start_time))
