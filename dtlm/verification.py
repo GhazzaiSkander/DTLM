@@ -70,3 +70,54 @@ def Edges_Verification(response_content):
 
     return ast.literal_eval(response_content)
 
+import re
+import ast
+
+def Edges_Verification_Improved(response_content):
+    """
+    Attempts to safely parse a string response into a list, handling various formatting issues.
+
+    Parameters:
+    - response_content (str or list): The content of the response, either as a string or a list.
+
+    Returns:
+    - list: The parsed list from the response content.
+
+    Raises:
+    - ValueError: If the input is neither a string nor a list, or if parsing fails.
+    """
+    # Directly return the input if it's already a list
+    if isinstance(response_content, list):
+        return response_content
+
+    # Validate the input is a string
+    if not isinstance(response_content, str):
+        raise ValueError("Input must be a string or a list")
+
+    # Trim leading and trailing whitespace
+    response_content = response_content.strip()
+
+    # Attempt to directly parse the string with ast.literal_eval
+    try:
+        # Pre-process response content to ensure it's properly formatted for ast.literal_eval
+        formatted_response = re.sub(r'^[^[]*\[', '[', response_content)  # Ensure it starts with '['
+        formatted_response = re.sub(r'\][^]]*$', ']', formatted_response)  # Ensure it ends with ']'
+        return ast.literal_eval(formatted_response)
+    except:
+        # If direct parsing fails, attempt a more robust recovery
+        if not response_content.startswith('['):
+            response_content = '[' + response_content
+        if not response_content.endswith(']'):
+            response_content = response_content + ']'
+
+        # Try parsing again after basic recovery attempts
+        try:
+            return ast.literal_eval(response_content)
+        except Exception as e:
+            # If parsing still fails, log the error and the problematic string
+            print(f"Failed to parse response content into a list: {e}")
+            print(f"Original content: {response_content}")
+            # Depending on your error handling policy, you might return an empty list,
+            # raise the exception, or handle it in another way.
+            raise ValueError(f"Failed to parse the string into a list: {response_content}")
+
