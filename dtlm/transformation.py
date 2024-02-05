@@ -198,7 +198,7 @@ def simple_transformation(df, Model="gpt-4",client=None,dataset_name="Unknown",f
                         "description_keywords": description,
                         "example_pairs": example_pairs,
                         "output": results,
-                        "accuracy": accuracy_score(inputs,results),
+                        "accuracy": Unchanged_values,
                         "total_number_of_token": Total_Nb_Token
                     }
                 log_experiment(experiment_data)
