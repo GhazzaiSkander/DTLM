@@ -32,8 +32,8 @@ def simple_prompt_template(Input_Output_Pair_Examples, Desired_Format_Keywords, 
         raise ValueError("Input examples or format keywords must be provided.")
 
     messages = [{"role": "system", "content": "You are a helpful assistant that transforms values into the specified format. If unsure about any transformation, return the original value. Ensure the number of outputs matches the number of inputs exactly."}]
-
-    prompt_introduction = "Given different values in data format, the objective is to transform individual values to align with the new format. The model should transform each provided value with 100% accuracy. If the model is unsure about any transformation, it should return the original value. The number of transformed values in the output should exactly match the number of input values."
+    prompt_introduction = "Given different values in data format, the objective is to transform individual values to align with the new format. The model should transform each provided value with 100% accuracy.The number of transformed values in the output should exactly match the number of input values."
+    #prompt_introduction = "Given different values in data format, the objective is to transform individual values to align with the new format. The model should transform each provided value with 100% accuracy. If the model is unsure about any transformation, it should return the original value. The number of transformed values in the output should exactly match the number of input values."
 
     if Input_Output_Pair_Examples:
         example_input = [pair[0] for pair in Input_Output_Pair_Examples]
