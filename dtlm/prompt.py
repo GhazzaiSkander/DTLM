@@ -77,8 +77,9 @@ def generate_prompt(Input_Output_Pair_Examples: List[Tuple[str, str]], Desired_F
         raise ValueError("Unsupported mode. Please choose 'openai' or 'mistral' gpt-4.")
 
     system_message = "You are a helpful assistant that transforms values into the specified format. If unsure about any transformation, return the original value. Ensure the number of outputs matches the number of inputs exactly."
+    prompt_introduction = "Given different values in data format, the objective is to transform individual values to align with the new format. The model should transform each provided value with 100% accuracy.The number of transformed values in the output should exactly match the number of input values."
 
-    prompt_introduction = "Given different values in data format, the objective is to transform individual values to align with the new format. The model should transform each provided value with 100% accuracy. If the model is unsure about any transformation, it should return the original value. The number of transformed values in the output should exactly match the number of input values."
+    #prompt_introduction = "Given different values in data format, the objective is to transform individual values to align with the new format. The model should transform each provided value with 100% accuracy. If the model is unsure about any transformation, it should return the original value. The number of transformed values in the output should exactly match the number of input values."
 
     examples_section = ""
     if Input_Output_Pair_Examples:
