@@ -269,8 +269,180 @@ def basic_transformation(df,column,example_pairs,description,input,dataset_name=
                   }
 
 
-# In[ ]:
 
 
+def complex_transformation(df, model="gpt-4", client=None, dataset_name="Unknown", filename="experiment_results.csv", verbose=False):
+    """
+    An enhanced transformation function that allows users to specify detailed context and chain of thought
+    for transforming data in a pandas DataFrame.
+
+    Parameters:
+    - df (pd.DataFrame): The DataFrame containing the data to be transformed.
+    - model (str): The model to use for the transformation, default is "gpt-4".
+    - client: The API client for interacting with the model.
+    - dataset_name (str): Name of the dataset for logging purposes.
+    - filename (str): File name for saving experiment results.
+    - verbose (bool): If True, prints detailed logs of the transformation process.
+    """
+    
+    # UI components for specifying transformation details
+    column_selector = widgets.Dropdown(options=df.columns, description='Select Column:', disabled=False)
+    description_input = widgets.Text(description='Describe Transformation:', placeholder='e.g., Convert temperatures from C to F')
+    context_input = widgets.Textarea(description='Context:', placeholder='e.g.,The context of the transformation ...')
+    additional_knowlodge_input = widgets.Textarea(description='Additional_knowledge:', placeholder='e.g.,Ground truth  for the model ...')
+
+    chain_of_thought_input = widgets.Textarea(description='Chain of Thought:', placeholder='e.g., Chain of thougths...')
+    input_example = widgets.Text(description='Input Example:')
+    output_example = widgets.Text(description='Output Example:')
+    add_example_button = widgets.Button(description="Add Example Pair")
+    process_button = widgets.Button(description="Process Transformation")
+    output_area = widgets.Output()
+
+    example_pairs = []  # To store input-output example pairs
+    
+    def add_example_pair(b):
+        """
+        Adds a new input-output example pair to the list and displays current pairs.
+        """
+        inp = input_example.value
+        out = output_example.value
+        if inp and out:  # Check if both input and output are provided
+            example_pairs.append((inp, out))
+            input_example.value = ''  # Clear fields after adding
+            output_example.value = ''
+            display_current_pairs()  # Display updated list of pairs
+
+    def display_current_pairs():
+        """
+        Displays the current list of input-output example pairs in the output area.
+        """
+        with output_area:
+            output_area.clear_output()  # Clear previous outputs
+            if example_pairs:
+                print("Current input-output pairs:")
+                for i, (inp, out) in enumerate(example_pairs, start=1):
+                    print(f"{i}. {inp} -> {out}")
+            else:
+                print("No example pairs added yet.")
+                
+    def process_transformation(b):
+        """
+        Processes the transformation based on user inputs, context, and chain of thought.
+        """
+        # Implementation for processing the transformation
+        # This should include generating prompts for the model based on the user inputs,
+        # context, chain of thought, and the input-output examples.
+        with output_area:
+            output_area.clear_output()
+            column=column_selector.value
+            inputs=list(df[column].values)
+            print("Processing transformation...")
+            description=description_input.value
+            context=context_input.value
+            if example_pairs:
+                for inp, out in example_pairs:
+                    print(f"Input: {inp} -> Output: {out}")
+            additional_knowlodge=additional_knowlodge_input.value
+            chain_of_thought=chain_of_thought_input.value
+            #Ditcomtic split
+            sublists=split_list_by_token_limit(inputs)
+            print("Processing this number of element" , len(subpart))
+ 
+            Total_NB_tokens=0
+            for subpart in sublists :
+              start_time=time.time()
+              try :
+                if verbose :
+                  print("Working  with the batch number", iteration)
+                  iteration+=1
+                  print("Generation messages for model..")
+                  prompt=generate_prompt(example_pairs, description, context,chain_of_thought,additional_knowlodge,subpart,model)
+                  if verbose :
+                    for msg in prompt :
+                      print(msg)
+                  Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(prompt,model,client)
+                  if verbose :
+                    print(Response_Content)
+                  Total_Nb_Token+=Prompt_Nb_Tokens + Response_Nb_Tokens 
+                  try :
+                    print("Processing Model response ...")
+                    output = list(Edges_Verification(Response_Content))
+                  except :
+                    print("Automatic extraction failed. Second attemp")
+                    output_str = Edges_Verification_Improved(Response_Content)
+                    output=list(output_str)
+                    if len(output)!=len(subpart):
+                        if verbose:
+                          print("Problem with the number of element we are going divide the list in two ")
+                        mid_index = len(subpart) // 2
+                        first_half = subpart[:mid_index]
+                        second_half = subpart[mid_index:]
+                        prompt=generate_prompt(example_pairs, description, context,chain_of_thought,additional_knowlodge,first_half,model)
+                        Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(prompt,model,client)
+                        try :
+                          output_1 = list(Edges_Verification(Response_Content))
+                        except:
+                          output_1=list(Edges_Verification_Improved(Response_Content))
+                        prompt=generate_prompt(example_pairs, description, context,chain_of_thought,additional_knowlodge,second_half,model)
+                        try :
+                          output_2=list(Edges_Verification(Response_Content))
+                        except:
+                          output_2=list(Edges_Verification_Improved(Response_Content))
+                        results.extend(output_1)
+                        results.extend(output_2)
+                    else :
+                      results.extend(output)
+                      print("the length the results",len(results))
+              
+              except  Exception as e :
+                print("Problem with the iteration ", len(subpart))
+                logging.error("An error occurred during the transformation process: ", exc_info=True)
+              print("The number of element that has been processed" , len(output))
+              print("--- %s seconds ---" % (time.time() - start_time))
+              new_column_name=column+"_"+description+"_Transformation"
+              try :
+                df.loc[:,new_column_name]=experiment_results
+                print(f"Transformation is done for the column '{column}'. New column '{new_column_name}' added.")
+              
+              except Exception as e:
+                  print("An error occurred during the integration of the results into the dataframe")
+                  print(results)
+                  print(len(results))
+              try :
+                Unchanged_values=accuracy_score(inputs,results)
+              except:
+                print("The accuracy couldn't be calculated we are returning a non values ")
+                Unchanged_values="N/A"
+              experiment_data = {
+                        "experiment_id": generate_experiment_id(Model),
+                        "Dataset_Name": dataset_name,
+                        "Column_name": column,
+                        "inputs": inputs,
+                        "description_keywords": description,
+                        "example_pairs": example_pairs,
+                        "output": results,
+                        "accuracy": Unchanged_values,
+                        "total_number_of_token": Total_Nb_Token
+                    }
+              log_experiment(experiment_data)
+              print("The transformation is now complete")
+              if verbose :
+                 print("The is the data add it in the experiment_data ",experiment_data)
 
 
+            # Here, you would integrate the logic to use the model for data transformation
+            # This can involve constructing a detailed prompt with the provided information
+            # and sending it to the model for processing.
+            
+            # Example of what might be included in your processing logic:
+            # 1. Construct the prompt using the description, context, chain of thought, and example pairs.
+            # 2. Send the prompt to the model for each value in the selected column.
+            # 3. Display the transformed values and any relevant logs if verbose is True.
+    
+    # Link buttons to their action functions
+    add_example_button.on_click(add_example_pair)
+    process_button.on_click(process_transformation)
+    
+    # Layout the widgets
+    input_widgets = widgets.VBox([column_selector, description_input, context_input,additional_knowlodge_input, chain_of_thought_input, input_example, output_example, add_example_button, process_button])
+    display(input_widgets, output_area)
