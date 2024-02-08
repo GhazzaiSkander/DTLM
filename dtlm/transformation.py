@@ -364,7 +364,7 @@ def complex_transformation(df, model="gpt-4", client=None, dataset_name="Unknown
                   Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(prompt,model,client)
                   if verbose :
                     print(Response_Content)
-                  Total_Nb_Token+=Prompt_Nb_Tokens + Response_Nb_Tokens 
+                  Total_NB_tokens+=Prompt_Nb_Tokens + Response_Nb_Tokens 
                   try :
                     print("Processing Model response ...")
                     output = list(Edges_Verification(Response_Content))
