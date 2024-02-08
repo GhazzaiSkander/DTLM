@@ -397,7 +397,7 @@ def complex_transformation(df, model="gpt-4", client=None, dataset_name="Unknown
               except  Exception as e :
                 print("Problem with the iteration ", len(subpart))
                 logging.error("An error occurred during the transformation process: ", exc_info=True)
-              print("The number of element that has been processed" , len(output))
+              print("The number of element that has been processed" , len(results))
               print("--- %s seconds ---" % (time.time() - start_time))
               new_column_name=column+"_"+description+"_Transformation"
               try :
