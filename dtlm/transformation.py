@@ -14,6 +14,7 @@ from .completion import get_completion
 from .verification import Edges_Verification
 from .prompt import simple_prompt_template
 from .prompt import generate_prompt
+from .prompt import generate_prompt_complet
 from .counter import split_list_by_token_limit
 from .history import log_experiment
 from sklearn.metrics import accuracy_score
