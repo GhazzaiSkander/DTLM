@@ -356,7 +356,7 @@ def complex_transformation(df, model="gpt-4", client=None, dataset_name="Unknown
                   print("Working  with the batch number", iteration)
                   iteration+=1
                   print("Generation messages for model..")
-                  prompt=generate_prompt(example_pairs, description, context,chain_of_thought,additional_knowlodge,subpart,model)
+                  prompt=generate_prompt_complet(example_pairs, description, context,chain_of_thought,additional_knowlodge,subpart,model)
                   if verbose :
                     for msg in prompt :
                       print(msg)
@@ -377,13 +377,13 @@ def complex_transformation(df, model="gpt-4", client=None, dataset_name="Unknown
                         mid_index = len(subpart) // 2
                         first_half = subpart[:mid_index]
                         second_half = subpart[mid_index:]
-                        prompt=generate_prompt(example_pairs, description, context,chain_of_thought,additional_knowlodge,first_half,model)
+                        prompt=generate_prompt_complet(example_pairs, description, context,chain_of_thought,additional_knowlodge,first_half,model)
                         Response_Content, Prompt_Nb_Tokens, Response_Nb_Tokens=get_completion(prompt,model,client)
                         try :
                           output_1 = list(Edges_Verification(Response_Content))
                         except:
                           output_1=list(Edges_Verification_Improved(Response_Content))
-                        prompt=generate_prompt(example_pairs, description, context,chain_of_thought,additional_knowlodge,second_half,model)
+                        prompt=generate_prompt_complet(example_pairs, description, context,chain_of_thought,additional_knowlodge,second_half,model)
                         try :
                           output_2=list(Edges_Verification(Response_Content))
                         except:
