@@ -346,7 +346,7 @@ def complex_transformation(df, model="gpt-4", client=None, dataset_name="Unknown
             chain_of_thought=chain_of_thought_input.value
             #Ditcomtic split
             sublists=split_list_by_token_limit(inputs)
- 
+            iteration=0
             Total_NB_tokens=0
             for subpart in sublists :
               print("Processing this number of element" , len(subpart))
