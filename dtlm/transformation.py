@@ -398,11 +398,11 @@ def complex_transformation(df, model="gpt-4", client=None, dataset_name="Unknown
               except  Exception as e :
                 print("Problem with the iteration ", len(subpart))
                 logging.error("An error occurred during the transformation process: ", exc_info=True)
-              print("The number of element that has been processed" , len(results))
               print("--- %s seconds ---" % (time.time() - start_time))
+              #print("The number of element that has been processed" , len(results))
               new_column_name=column+"_"+description+"_Transformation"
               try :
-                df.loc[:,new_column_name]=experiment_results
+                df.loc[:,new_column_name]=results
                 print(f"Transformation is done for the column '{column}'. New column '{new_column_name}' added.")
               
               except Exception as e:
